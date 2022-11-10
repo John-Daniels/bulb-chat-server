@@ -53,18 +53,6 @@ export const validateLogin = [
 
 // using express validator middleware to check for errors in all fields for user model.
 export const validateSignup = [
-  body("firstName")
-    .exists({ checkNull: true, checkFalsy: true })
-    .withMessage("Firstname cannot be empty!")
-    .isLength({ min: 3 })
-    .withMessage("Firstname must have at least 3 characters"),
-
-  body("lastName")
-    .exists({ checkNull: true, checkFalsy: true })
-    .withMessage("Lastname cannot be empty!")
-    .isLength({ min: 3 })
-    .withMessage("Lastname should have at least 3 characters"),
-
   body("username")
     .exists({ checkNull: true, checkFalsy: true })
     .withMessage("Username cannot be empty!")
@@ -80,32 +68,16 @@ export const validateSignup = [
     .withMessage('Provide a valid email!')
     .custom((value: string) => duplicateValidator(value, 'email')),
 
-  body("phone")
-    .isLength({ min: 3 })
-    .withMessage('Provide a valid phone number!')
-    .custom((value: string) => duplicateValidator(value, 'phone')),
-
   body("password")
     .exists({ checkNull: true, checkFalsy: true })
     .withMessage('Password cannot be empty!')
     .isLength({ min: 8 })
     .withMessage("Password must have at least 8 characters")
     .trim(),
-  body("location")
-    .isLength({ min: 3 })
-    .withMessage("Provide a valid location!"),
 ]
 
 export const validateRequestResetPassword = [
-  // body("email")
-  //   .exists({ checkNull: true, checkFalsy: true })
-  //   .trim()
-  //   .isEmail()
-  //   .withMessage("Provide a valid email"),
-
-
   body("email").exists().withMessage('Email address cannot be empty').isEmail().withMessage('Provide a valid email address!'),
-
 ]
 
 

@@ -7,28 +7,15 @@ import { sendVerificationMail } from "../services/emails";
 const userSchema = new mongoose.Schema(
     {
         //user data
-        firstName: {
-            type: String,
-            required: true,
-        },
-        lastName: {
-            type: String,
-            required: true,
-        },
         username: {
             type: String,
             required: true,
             unique: true,
             trim: true,
         },
-
         email: {
             type: String,
             required: true,
-            unique: true,
-        },
-        phone: {
-            type: String,
             unique: true,
         },
         password: {
