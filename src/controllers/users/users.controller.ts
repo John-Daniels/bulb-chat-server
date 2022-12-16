@@ -7,6 +7,11 @@ import { isDuplicate } from '../../utils/validators'
 
 import { isEmail } from 'validator'
 
+export const getAllUsers = async (req: any, res: any) => {
+    const users = await User.find({ _id: { $ne: req.user._id } }).select(['email', 'username', 'avater', '_id'])
+    respond(res, 200, 'Fetched all users', users)
+}
+
 // /POST /signup
 export const signupUser = async (req: any, res: any) => {
     const newUser = {
@@ -22,9 +27,8 @@ export const signupUser = async (req: any, res: any) => {
         await user.verify();
         const obsuredUser: any = user.toJSON()
 
-        // const tokens = await user.generateAuthToken() -- 
-        respond(res, 201, 'Succesfully registered, verification code has been sent to your email!', obsuredUser)
-
+        const tokens = await user.generateAuthToken()
+        respond(res, 201, 'Succesfully registered, verification code has been sent to your email!', { ...obsuredUser, ...tokens })
     } catch (e) {
         respond(res, 500, 'Something went wrong!, try again later.', e)
     }
@@ -43,21 +47,25 @@ export const loginUser = async (req: any, res: any) => {
     try {
         const user = await User.findOne({ [by]: credentials[by] })
         // catch the error b4 it actually happens
-        if (!user) return respond(res, 404, 'User not found!')
+        if (!user) return respond(res, 404, 'Please provide valid credentials')
 
 
         // verification wall!!!!!
         // if we are here --- that means that the user is available.... so lets check for verification
-        if (user.isEmailVerified !== true)
-            return respond(res, 403, "Please verify your account b4 you login"); // this is a custom one for login...
+        // if (user.isEmailVerified !== true)
+        //     return respond(res, 403, "Please verify your account b4 you login"); // this is a custom one for login...
 
 
         const userDetails = await User.login(by, credentials[by], credentials.password)
         respond(res, 200, 'Succesfully signed in', userDetails)
     } catch (e: any) {
         const error = e.toString().split('Error: ')[1]
-        respond(res, 403, 'Something went wrong!, try again later', error)
+        respond(res, 403, error)
     }
+}
+
+export const getUserProfile = async (req, res) => {
+    respond(res, 200, 'Fetched User profile', req.user)
 }
 
 //must be with auth middleware
@@ -249,6 +257,24 @@ export const refreshUserByToken = async (req, res) => {
     }
 };
 
+
+export const setAvater = async (req, res) => {
+    try {
+        const { _id } = req.user
+        const avater = req.body.avater
+
+        if (!avater) respond(res, 400, 'avater is required!')
+        const user = await User.findByIdAndUpdate(_id, {
+            avater,
+        }, { new: true })
+
+        respond(res, 201, 'Sucessfully set the avater', user)
+
+    } catch (e) {
+        respond(res, 500, 'Something went wrong!, try again later.', e)
+    }
+}
+
 export default {
     signupUser,
     loginUser,
@@ -259,4 +285,5 @@ export default {
     requestPasswordReset,
     resetPassword,
     verifyUser,
+    setAvater,
 }

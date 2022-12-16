@@ -3,31 +3,44 @@ import express from "express"
 
 //controllers
 import { verifyAuthToken, verifyAuthStateByTokenQuery } from '../middlewares/auth.middleware';
-import { signupUser, loginUser, logoutUser, updateUser, deleteUser, verifyUser, requestVerificationToken, requestPasswordReset, resetPassword, refreshUserByToken } from '../controllers/users/users.controller';
-
+import {
+    signupUser,
+    loginUser,
+    logoutUser,
+    updateUser,
+    deleteUser,
+    verifyUser,
+    requestVerificationToken,
+    requestPasswordReset,
+    resetPassword,
+    refreshUserByToken,
+    setAvater,
+    getUserProfile,
+    getAllUsers,
+} from '../controllers/users/users.controller';
+import { checkErrors } from '../utils/validators';
 //validators
-import { validateSignup, checkErrors, validateLogin, validateRequestResetPassword, validateResetPassword } from '../utils/validators/user.validator';
+import { validateSignup, validateLogin, validateRequestResetPassword, validateResetPassword } from '../utils/validators/user.validator';
+import respond from '../utils/respond';
 
 const router = express.Router()
 
 // just for test...
-router.get("/", async (req: any, res: any) => {
-    const users = await User.find()
-    res.send(users)
-});
+router.get("/", verifyAuthToken, getAllUsers);
 
 // signup model
 // signup  --> verication --> login  --> authenication
 
 //                 validate --> checkforerrors --> nextfunc
 router.post('/signup', validateSignup, checkErrors, signupUser)
+router.get('/profile', verifyAuthToken, getUserProfile)
 
 // POST /login?by=username
 router.post('/login', validateLogin, checkErrors, loginUser)
 
 // POST /logout?all=true
 router.post('/logout', verifyAuthToken, logoutUser)
-
+router.post('/avater', verifyAuthToken, setAvater)
 // update by id
 router.put('/', verifyAuthToken, updateUser)
 

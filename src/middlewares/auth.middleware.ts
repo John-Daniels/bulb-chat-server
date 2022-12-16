@@ -6,6 +6,7 @@ import { JwtTokenType } from "../constants";
 
 export const verifyAuthToken = async (req: any, res: Response, next: NextFunction) => {
     try {
+
         // const token = req.get("Authorization")?.split("Bearer ")[1];
         const token = req.header('Authorization').replace('Bearer ', '')
 
@@ -26,8 +27,8 @@ export const verifyAuthToken = async (req: any, res: Response, next: NextFunctio
         if (!user) return respond(res, 404, "Sorry but user is not found!");
 
         // verificaton
-        if (!user.isEmailVerified)
-            return respond(res, 403, "pls verify your account");
+        // if (!user.isEmailVerified)
+        //     return respond(res, 403, "pls verify your account");
 
         req.user = user;
         req.token = token;

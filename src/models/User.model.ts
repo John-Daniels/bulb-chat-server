@@ -124,12 +124,12 @@ userSchema.statics.login = async (by = 'email' || 'username', string, password) 
 
     if (!user) {
         // 404 but lets keep it simple bcuz of hackers
-        throw new Error('Pls provide valid credentials')
+        throw new Error('Please provide valid credentials')
     }
 
     const isMatch = await bcrypt.compare(password, user.password)
 
-    if (!isMatch) throw new Error('Pls provide valid credentials')
+    if (!isMatch) throw new Error('Please provide valid credentials')
 
     const tokens = await user.generateAuthToken()
     const obsuredUser: object = user.toJSON()
@@ -142,7 +142,6 @@ userSchema.methods.logout = async function (token, by) {
     try {
         user.tokens = user.tokens.filter((t: any) => t[by] !== token)
         await user.save()
-        console.log('i wnt to')
     } catch (e) {
         console.log(e)
     }
