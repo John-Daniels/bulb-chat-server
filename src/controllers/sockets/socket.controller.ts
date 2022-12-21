@@ -1,6 +1,5 @@
 import { Server } from "socket.io";
 
-
 const initializeSocket = (server) => {
         const io = new Server(server, {
                 cors: {
@@ -12,26 +11,27 @@ const initializeSocket = (server) => {
         global.onlineUsers = new Map();
         io.on("connection", (socket) => {
 
+                socket.emit('msg-receive', 'hello from server');
 
                 console.log('new connection', socket.id)
                 global.chatSocket = socket;
                 socket.on('add-user', (userId) => {
                         global.onlineUsers.set(userId, socket.id)
                         console.log(socket.id, 'join')
-                        socket.join(socket.id)
+                        // socket.join(socket.id)
 
-                        setInterval(() => {
+                        // setInterval(() => {
 
-                                io.to(socket.id).emit('msg-receive', 'hello from server')
+                        //         io.to(socket.id).emit('msg-receive', 'hello from server')
 
-                        }, 2000)
+                        // }, 2000)
                 })
 
                 socket.on('send-msg', (data) => {
                         const sendUserSocket = global.onlineUsers.get(data.to)
                         console.log(data, 'send-msg', sendUserSocket)
                         // if (sendUserSocket) {
-                        io.to(sendUserSocket).emit('msg-receive', data.message)
+                        socket.emit('msg-receive', data.message)
                         // }
                 })
         });
