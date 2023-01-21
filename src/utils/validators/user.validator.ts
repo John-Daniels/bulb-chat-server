@@ -3,7 +3,6 @@ import { body, validationResult } from "express-validator";
 import User from "../../models/User.model";
 import { duplicateValidator, isDuplicate } from ".";
 import respond from "../respond";
-import { Model } from "mongoose";
 
 export const validateLogin = [
   body("username")
@@ -35,7 +34,7 @@ export const validateSignup = [
     .withMessage("Email cannot be empty!")
     .isEmail()
     .withMessage('Provide a valid email!')
-    .custom((value: string) => duplicateValidator(value, 'email', Model)),
+    .custom((value: string) => duplicateValidator(value, 'email', User)),
 
   body("password")
     .exists({ checkNull: true, checkFalsy: true })

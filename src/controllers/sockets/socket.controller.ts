@@ -8,31 +8,29 @@ const initializeSocket = (server) => {
                 },
         });
 
-        global.onlineUsers = new Map();
+        // global.onlineUsers = new Map();
         io.on("connection", (socket) => {
-
-                socket.emit('msg-receive', 'hello from server');
-
                 console.log('new connection', socket.id)
                 global.chatSocket = socket;
-                socket.on('add-user', (userId) => {
-                        global.onlineUsers.set(userId, socket.id)
-                        console.log(socket.id, 'join')
-                        // socket.join(socket.id)
 
-                        // setInterval(() => {
+                const getUserRoom = (users: string[]) => users.sort().join('_')
 
-                        //         io.to(socket.id).emit('msg-receive', 'hello from server')
+                socket.on('join-users', (users: Array<string>) => {
+                        const roomName = getUserRoom(users);
+                        // console.log('joined', roomName)
 
-                        // }, 2000)
+                        socket.join(roomName)
                 })
 
+                socket.on('leave-room', (roomName) => {
+                        socket.leave(roomName);
+                });
+
                 socket.on('send-msg', (data) => {
-                        const sendUserSocket = global.onlineUsers.get(data.to)
-                        console.log(data, 'send-msg', sendUserSocket)
-                        // if (sendUserSocket) {
-                        socket.emit('msg-receive', data.message)
-                        // }
+                        const { to, from } = data
+
+                        const roomName = getUserRoom([from, to])
+                        socket.broadcast.to(roomName).emit('msg-receive', data.message)
                 })
         });
 }

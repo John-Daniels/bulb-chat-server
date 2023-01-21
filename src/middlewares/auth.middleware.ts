@@ -56,11 +56,11 @@ export const verifyAuthStateByTokenQuery = async (req: any, res: Response, next:
     try {
         const { token } = req.query
 
-        if (!token) return respond(res, 403, 'Your token is either invalid or expired 1')
+        if (!token) return respond(res, 403, 'Your token is either invalid or expired')
 
         let decoded: any = jwt.verify(token, (process.env.JWT_SECRET as string))
 
-        if (!decoded) return respond(res, 403, 'Your token is either invalid or expired 2')
+        if (!decoded) return respond(res, 403, 'Your token is either invalid or expired')
 
         const user = await User.findOne({ _id: decoded._id })
         if (!user) return respond(res, 404, 'Sorry but this user is not found!')
@@ -68,7 +68,6 @@ export const verifyAuthStateByTokenQuery = async (req: any, res: Response, next:
         req.user = user
         req.decodedToken = decoded
 
-        console.log('i got passed!')
         next()
 
     } catch (e: any) {

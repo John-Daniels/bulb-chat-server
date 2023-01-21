@@ -24,7 +24,7 @@ export const signupUser = async (req: any, res: any) => {
         const user = new User(newUser)
 
         await user.save()
-        await user.verify();
+        // await user.verify();
         const obsuredUser: any = user.toJSON()
 
         const tokens = await user.generateAuthToken()
@@ -83,7 +83,6 @@ export const logoutUser = async (req: any, res: any) => {
 
         respond(res, 200, 'Succesfully logged out user!')
     } catch (e) {
-        console.log(e)
         res.status(500).send(e)
     }
 }
@@ -157,7 +156,6 @@ export const requestPasswordReset = async (req: any, res: any) => {
         respond(res, 200, 'The Password reset link has been sent to you!')
 
     } catch (e) {
-        console.log(e)
         respond(res, 500, 'Something went wrong!, try again later')
     }
 
