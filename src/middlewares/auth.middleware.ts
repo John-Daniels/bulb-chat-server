@@ -6,6 +6,7 @@ import { JwtTokenType } from "../constants";
 
 export const verifyAuthToken = async (req: any, res: Response, next: NextFunction) => {
     try {
+
         // const token = req.get("Authorization")?.split("Bearer ")[1];
         const token = req.header('Authorization').replace('Bearer ', '')
 
@@ -26,8 +27,8 @@ export const verifyAuthToken = async (req: any, res: Response, next: NextFunctio
         if (!user) return respond(res, 404, "Sorry but user is not found!");
 
         // verificaton
-        if (!user.isEmailVerified)
-            return respond(res, 403, "pls verify your account");
+        // if (!user.isEmailVerified)
+        //     return respond(res, 403, "pls verify your account");
 
         req.user = user;
         req.token = token;
@@ -55,11 +56,11 @@ export const verifyAuthStateByTokenQuery = async (req: any, res: Response, next:
     try {
         const { token } = req.query
 
-        if (!token) return respond(res, 403, 'Your token is either invalid or expired 1')
+        if (!token) return respond(res, 403, 'Your token is either invalid or expired')
 
         let decoded: any = jwt.verify(token, (process.env.JWT_SECRET as string))
 
-        if (!decoded) return respond(res, 403, 'Your token is either invalid or expired 2')
+        if (!decoded) return respond(res, 403, 'Your token is either invalid or expired')
 
         const user = await User.findOne({ _id: decoded._id })
         if (!user) return respond(res, 404, 'Sorry but this user is not found!')
@@ -67,7 +68,6 @@ export const verifyAuthStateByTokenQuery = async (req: any, res: Response, next:
         req.user = user
         req.decodedToken = decoded
 
-        console.log('i got passed!')
         next()
 
     } catch (e: any) {

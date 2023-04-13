@@ -124,12 +124,12 @@ userSchema.statics.login = async (by = 'email' || 'username', string, password) 
 
     if (!user) {
         // 404 but lets keep it simple bcuz of hackers
-        throw new Error('Pls provide valid credentials')
+        throw new Error('Please provide valid credentials')
     }
 
     const isMatch = await bcrypt.compare(password, user.password)
 
-    if (!isMatch) throw new Error('Pls provide valid credentials')
+    if (!isMatch) throw new Error('Please provide valid credentials')
 
     const tokens = await user.generateAuthToken()
     const obsuredUser: object = user.toJSON()
@@ -137,37 +137,27 @@ userSchema.statics.login = async (by = 'email' || 'username', string, password) 
     return { ...obsuredUser, ...tokens }
 }
 
-userSchema.methods.logout = async function (token, by) {
-    const user = this
-    try {
-        user.tokens = user.tokens.filter((t: any) => t[by] !== token)
-        await user.save()
-        console.log('i wnt to')
-    } catch (e) {
-        console.log(e)
-    }
-    return user
-}
+// userSchema.methods.logout = async function (token, by) {
+//     const user = this
+//     try {
+//         user.tokens = user.tokens.filter((t: any) => t[by] !== token)
+//         await user.save()
+//     } catch (e) {
+//         console.log(e)
+//     }
+//     return user
+// }
 
 // this middleware of mongodb is so powerful
 // this will be called right b4 we save the user
 userSchema.pre('save', async function (next) {
     const user: any = this
 
-    // const previousUser: any = await User.findById(user.id)
-    // console.log(previousUser?.firstName)
-
     // Hash the plain text password before saving
     if (user.isModified('password')) {
         user.password = await bcrypt.hash(user.password, 8)
     }
 
-    // this will rename the user's username in all the products created
-    // if (user.isModified('username')) {
-    //     console.log('yes')
-    //     await Product.where('owner', previousUser.username)
-    //         .updateMany({ owner: user.username })
-    // }
 
     next()
 })
