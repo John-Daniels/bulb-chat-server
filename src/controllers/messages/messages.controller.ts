@@ -1,5 +1,5 @@
-import respond from "../utils/respond";
-import Message from "../models/Message.model";
+import respond from "../../utils/respond";
+import Message from "../../models/Message.model";
 
 export const addMessage = async (req, res, next) => {
         try {
@@ -19,8 +19,9 @@ export const addMessage = async (req, res, next) => {
 };
 
 export const getAllMessage = async (req, res, next) => {
-        const { _id: from } = req.user;
+        const { _id } = req.user;
         const to = req.params.userId;
+        const from = _id.toString();
 
         if (!to) return respond(res, 400, "pls provide a valid userId");
 

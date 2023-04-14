@@ -48,9 +48,9 @@ router.put('/', verifyAuthToken, updateUser)
 router.delete('/', verifyAuthToken, deleteUser)
 
 // /verificatiion?token=askdfr0i2dfksad;lkfpqdwiafisdfjds
-router.post("/verification/verify", verifyUser)
+// router.post("/verification/verify", verifyUser)
 // /verification/request/?email=test@gmail.com
-router.post("/verification/request", requestVerificationToken)
+// router.post("/verification/request", requestVerificationToken)
 
 // password reset
 router.post('/auth/reset-password/request', validateRequestResetPassword, checkErrors, requestPasswordReset) // - done
