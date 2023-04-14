@@ -1,4 +1,4 @@
-import { addMessage, getAllMessage } from '../controllers/messages.controller'
+import { addMessage, getAllMessage } from '../controllers/messages/messages.controller'
 import { Router } from 'express'
 import { checkErrors } from '../utils/validators';
 import { validateSendMessage } from '../utils/validators/messages.validator';
