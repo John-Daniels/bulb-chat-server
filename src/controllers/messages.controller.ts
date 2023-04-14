@@ -19,7 +19,7 @@ export const addMessage = async (req, res, next) => {
 };
 
 export const getAllMessage = async (req, res, next) => {
-        const { id: from } = req.user;
+        const { _id: from } = req.user;
         const to = req.params.userId;
 
         if (!to) return respond(res, 400, "pls provide a valid userId");
